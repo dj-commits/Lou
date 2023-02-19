@@ -1,0 +1,61 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://Assets/Sprites/spectre.png" type="Texture" id=1]
+[ext_resource path="res://Hitbox&Hurtbox/Hitbox.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Hitbox&Hurtbox/Hurtbox.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Spectre.gd" type="Script" id=4]
+
+[sub_resource type="Animation" id=2]
+resource_name = "Float"
+length = 0.8
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 0, 1, 2, 3, 4, 5, 6, 7 ]
+}
+
+[sub_resource type="Animation" id=3]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 0 ]
+}
+
+[sub_resource type="CircleShape2D" id=1]
+radius = 11.0
+
+[node name="Spectre" type="KinematicBody2D"]
+collision_layer = 128
+collision_mask = 7
+script = ExtResource( 4 )
+
+[node name="Sprite" type="Sprite" parent="."]
+texture = ExtResource( 1 )
+hframes = 8
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/Float = SubResource( 2 )
+anims/RESET = SubResource( 3 )
+
+[node name="Collider" type="CollisionShape2D" parent="."]
+shape = SubResource( 1 )
+
+[node name="Hitbox" parent="." instance=ExtResource( 2 )]
+
+[node name="Hurtbox" parent="." instance=ExtResource( 3 )]
