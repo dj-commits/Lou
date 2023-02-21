@@ -45,7 +45,6 @@ bulletSpeed = 5.0
 
 [node name="Sprite" type="Sprite" parent="."]
 texture = ExtResource( 1 )
-offset = Vector2( -0.03, 0 )
 hframes = 8
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

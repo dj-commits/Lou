@@ -11,14 +11,15 @@ export var acceleration = 200;
 export var friction = 200;
 export var maxSpeed = 400;
 var velocity: Vector2;
-var direction: Vector2;
+var aimDirection: Vector2;
 var mousePos: Vector2;
 var shooting: bool;
-
+var interacting: bool;
 
 enum BehaviorState {
 	Idle, 
 	Move,
+	Interacting
 }
 
 var state;
@@ -27,16 +28,21 @@ func _ready():
 	state = BehaviorState.Idle;
 	
 func _process(delta):
+	
 	mousePos = get_global_mouse_position();
-	direction = mousePos - position;
-	playerGun.rotation = direction.angle();
+	aimDirection = global_position.direction_to(mousePos);
+	playerGun.global_rotation = aimDirection.angle();
 	
 	var movement = Vector2.ZERO;
 	movement.x = Input.get_action_strength("ui_right") - Input.get_action_strength("ui_left");
 	movement.y = Input.get_action_strength("ui_down") - Input.get_action_strength("ui_up");
 	movement = movement.normalized();
-	
-	if(Input.is_action_just_pressed("attack")):
+	if(Input.is_action_just_pressed("interact")):
+		if(interacting):
+			interacting = false;
+		else:
+			interacting = true;
+	if(Input.is_action_just_pressed("attack") && !interacting):
 		shooting = true;
 	if(movement != Vector2.ZERO):
 		state = BehaviorState.Move;
@@ -49,28 +55,28 @@ func _process(delta):
 			animationPlayer.stop();
 			velocity = velocity.move_toward(Vector2.ZERO, friction * delta);
 			if(shooting):
-				shoot(regularBullet);
+				shoot(aimDirection);
 		BehaviorState.Move:
 			animationPlayer.play("Walk");
 			velocity = velocity.move_toward(movement * speed, acceleration * delta);
 			if(shooting):
-				shoot(regularBullet);
+				shoot(aimDirection);
+		BehaviorState.Interacting:
+			velocity = Vector2.ZERO;
 			
-func shoot(var bullet):
-	var centerBullet = bullet.instance();
-	var leftBullet = bullet.instance();
-	var rightBullet = bullet.instance();
+func shoot(var direction: Vector2):
+	var centerBullet = regularBullet.instance();
+	var leftBullet = regularBullet.instance();
+	var rightBullet = regularBullet.instance();
 	get_tree().get_current_scene().add_child(centerBullet);
 	get_tree().get_current_scene().add_child(leftBullet);
 	get_tree().get_current_scene().add_child(rightBullet);
-	var tempDirection = direction.normalized();
-	var tempVelocity = tempDirection * rand_range(.8, 2);
-	centerBullet.position = playerGun.global_position + direction / 2.5
-	centerBullet.velocity = tempVelocity
-	leftBullet.position = Vector2((playerGun.global_position.x + direction.x / 2.5) + rand_range(-8, -30),
-								  (playerGun.global_position.y + direction.y / 2.5) + rand_range(2, 4));
-	leftBullet.velocity = tempVelocity;
-	rightBullet.position = Vector2((playerGun.global_position.x + direction.x / 2.5) + rand_range(8, 30),
-								  (playerGun.global_position.y + direction.y / 2.5) + rand_range(2, 4));
-	rightBullet.velocity = tempVelocity;
+	
+	centerBullet.global_position = playerGun.gunEnd.global_position;
+	centerBullet.velocity = direction;
+	leftBullet.global_position = playerGun.gunEnd.global_position;
+	leftBullet.velocity = direction.rotated(deg2rad(-15));
+	rightBullet.global_position = playerGun.gunEnd.global_position;
+	rightBullet.velocity = direction.rotated(deg2rad(15));
+	
 	shooting = false;
