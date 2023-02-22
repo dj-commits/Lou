@@ -7,8 +7,13 @@ export(float) var textSpeed = 0.05;
 var dialog;
 var phraseNum: int;
 var finished: bool;
+var control;
+
+
+signal dialog_finished;
 
 func _ready():
+	control = get_parent();
 	$Timer.wait_time = textSpeed;
 	dialog = getDialog();
 	assert(dialog, "Dialog not found");
@@ -25,9 +30,15 @@ func getDialog() -> Array:
 	else:
 		return[];
 
+func resetDialog():
+	control.visible = false;
+	phraseNum = 0;
+	
 func nextPhrase():
+	if(control.visible == false):
+		control.visible = true;
 	if(phraseNum) >= len(dialog):
-		queue_free()
+		emit_signal("dialog_finished");
 		return
 	
 	$Name.bbcode_text = dialog[phraseNum]["Name"];

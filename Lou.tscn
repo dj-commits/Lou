@@ -84,17 +84,18 @@ collision_mask = 2
 shape = SubResource( 6 )
 
 [node name="Control" parent="." instance=ExtResource( 5 )]
-visible = false
-margin_left = -148.0
-margin_top = -75.0
-margin_right = -111.0
-margin_bottom = -39.0
+margin_left = -89.0
+margin_top = -78.0
+margin_right = -52.0
+margin_bottom = -42.0
 
-[node name="Name" parent="Control/Dialogue Box" index="0"]
-modulate = Color( 0, 0, 0, 1 )
+[node name="Dialogue Box" parent="Control" index="0"]
+margin_left = -1.0
+margin_top = -1.0
+margin_right = 181.0
 
 [node name="Text" parent="Control/Dialogue Box" index="1"]
-modulate = Color( 0, 0, 0, 1 )
+margin_right = 180.0
 size_flags_horizontal = 0
 size_flags_vertical = 0
 
@@ -102,6 +103,7 @@ size_flags_vertical = 0
 
 [connection signal="body_entered" from="InteractionZone" to="." method="_on_InteractionZone_body_entered"]
 [connection signal="body_exited" from="InteractionZone" to="." method="_on_InteractionZone_body_exited"]
+[connection signal="dialog_finished" from="Control/Dialogue Box" to="." method="_on_Dialogue_Box_dialog_finished"]
 
 [editable path="Hurtbox"]
 [editable path="InteractionZone"]

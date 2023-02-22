@@ -25,8 +25,6 @@ func _process(delta):
 	animationPlayer.play("Float");
 
 func process_dialogue(body: Node):
-	if(dialogueControl.visible == false):
-		dialogueControl.visible = true;
 	dialogueControl.dialogueBox.nextPhrase();
 		
 
@@ -43,3 +41,7 @@ func _on_InteractionZone_body_exited(body):
 	if(dialogueControl.visible == true):
 		dialogueControl.visible == false;
 	player = null;
+
+
+func _on_Dialogue_Box_dialog_finished():
+	dialogueControl.dialogueBox.resetDialog(); # Replace with function body.
