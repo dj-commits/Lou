@@ -80,3 +80,7 @@ func shoot(var direction: Vector2):
 	rightBullet.velocity = direction.rotated(deg2rad(15));
 	
 	shooting = false;
+
+
+func _on_WarpToHallway_body_entered(body):
+	get_tree().change_scene("res://World/Hallway.tscn"); # Replace with function body.

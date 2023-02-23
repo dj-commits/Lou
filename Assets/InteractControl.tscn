@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://Assets/InteractControl.gd" type="Script" id=1]
+[ext_resource path="res://Assets/Sprites/interact_prompt.png" type="Texture" id=2]
+
+[node name="InteractControl" type="Control"]
+margin_right = 40.0
+margin_bottom = 40.0
+script = ExtResource( 1 )
+
+[node name="Prompt" type="ColorRect" parent="."]
+margin_left = -8.0
+margin_top = -8.0
+margin_right = 8.0
+margin_bottom = 8.0
+
+[node name="Sprite" type="Sprite" parent="Prompt"]
+position = Vector2( 8, 8 )
+texture = ExtResource( 2 )

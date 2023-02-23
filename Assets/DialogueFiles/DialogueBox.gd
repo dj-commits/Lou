@@ -4,10 +4,13 @@ extends ColorRect
 export var dialogPath = "res://Assets/DialogueFiles/IntroDialogue.json";
 export(float) var textSpeed = 0.05;
 
+onready var nameText = $Name;
+onready var textText = $Text;
 var dialog;
 var phraseNum: int;
 var finished: bool;
 var control;
+var talking: bool;
 
 
 signal dialog_finished;
@@ -18,6 +21,10 @@ func _ready():
 	dialog = getDialog();
 	assert(dialog, "Dialog not found");
 	
+func _process(delta):
+	if(Input.is_action_just_pressed("interact") && textText.percent_visible != 1 && phraseNum != 0):
+		skipDialog();
+
 func getDialog() -> Array:
 	var f = File.new();
 	assert(f.file_exists(dialogPath), "File path does not exist");
@@ -34,10 +41,14 @@ func resetDialog():
 	control.visible = false;
 	phraseNum = 0;
 	
+func skipDialog():
+	phraseNum += 1;
+	nextPhrase();
+	
 func nextPhrase():
 	if(control.visible == false):
 		control.visible = true;
-	if(phraseNum) >= len(dialog):
+	if(phraseNum >= len(dialog)):
 		emit_signal("dialog_finished");
 		return
 	
@@ -49,6 +60,6 @@ func nextPhrase():
 		$Text.visible_characters += 1;
 		$Timer.start();
 		yield($Timer, "timeout");
-	finished = true;
-	phraseNum += 1;
-	return;
+	
+	if($Text.visible_characters == len($Text.text)):
+		phraseNum += 1;
